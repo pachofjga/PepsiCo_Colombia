@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Wed Feb 24 20:17:17 COT 2021
+onejar.license.required=false
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=D\:\\Back UP 02Octubre2020\\WorkspacesIndigoFJGA\\PepsiCo\\PepsicoSocketProductivo\\sockets\\SocketPepsicoDevVLLocalV1Casa.jar
+manifest.mergeall=true
+manifest.mainclass=dao.Sockets_Pepsico_Prod
+manifest.file=<createnew>
+jarname.isextern=true
+onejar.expand=
+excludes=
+includes=

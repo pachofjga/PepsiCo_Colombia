@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.vocollect.voiceartisan.dialog="http:///com/vocollect/voiceartisan/dialog.ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation">
+  <com.vocollect.voiceartisan.dialog:Dialog xmi:id="_QKyXEDZIEeu8sPdj4U9omw" id="1" startNode="_QKyXETZIEeu8sPdj4U9omw">
+    <nodes xmi:type="com.vocollect.voiceartisan.dialog:Node" xmi:id="_QKyXETZIEeu8sPdj4U9omw" id="1" name="Node1" prompt="Hello World"/>
+  </com.vocollect.voiceartisan.dialog:Dialog>
+  <notation:Diagram xmi:id="_QLBnoDZIEeu8sPdj4U9omw" type="Dialog" element="_QKyXEDZIEeu8sPdj4U9omw" name="main.vid" measurementUnit="Pixel">
+    <children xmi:type="notation:Shape" xmi:id="_QLBnoTZIEeu8sPdj4U9omw" type="1001" element="_QKyXETZIEeu8sPdj4U9omw">
+      <children xmi:type="notation:DecorationNode" xmi:id="_QLBnojZIEeu8sPdj4U9omw" type="4001"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_QLBnozZIEeu8sPdj4U9omw" type="4002"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_QLBnpDZIEeu8sPdj4U9omw"/>
+    </children>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_QLBnpTZIEeu8sPdj4U9omw"/>
+  </notation:Diagram>
+</xmi:XMI>
