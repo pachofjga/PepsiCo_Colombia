@@ -9,6 +9,7 @@ from vocollect_core.utilities.localization import itext
 from vocollect_core.dialog.functions import prompt_ready
 from common.VoiceLinkLut import VoiceLinkLut
 from selection_custom.PickingAndPassCustom import PickingAndPass as PAP
+from selection_custom.CheckBoxUOM import CheckBoxUOM
 
 
 
@@ -19,6 +20,10 @@ class BeginAssignment_Custom(BeginAssignment):
         #FraGon 06012021 Utilizo lut de impresion para generar dialogo adicional de caja nueva o caja media
         # y cambiar prompt de bienvenida
         pickingandpass=PAP()
+        # Reinicia los estados de la clase antes de tomar nueva asignación
+        CheckBoxUOM().resetBoxUOM()
+        # Revisa asignación para validacion del customer number respecto a valores dentro de la descripción: plastico y Carton
+        assignmentBoxUOM=CheckBoxUOM(self._assignment_lut)
         if (pickingandpass.isLUTEmpty()):
                 lut = VoiceLinkLut('prTaskLUTCustomCheckForPrint')
                 lut.do_transmit(self._assignment_lut[0]['assignmentID'])
@@ -30,7 +35,7 @@ class BeginAssignment_Custom(BeginAssignment):
         if pickingandpass.isAsgDev():
             pass
             #===================================================================
-            # SE COMENTA PORQUE SE COLOCA EN GET ASSIGNMENT CUSTOM ANTE DEL PICK REVERSE
+            # SE COMENTA PORQUE SE COLOCA EN GET ASSIGNMENT CUSTOM ANTES DEL PICK REVERSE
             #===================================================================
             #===================================================================
             # prompt_key = 'summary.prompt.custom'
@@ -62,7 +67,7 @@ class BeginAssignment_Custom(BeginAssignment):
             #===================================================================
         else:
             for assignment in self._assignment_lut:
-                prompt = ''                   
+                prompt = ''
                 #check if override prompt set, that one was given
                 if assignment['summaryPromptType'] == 2 and assignment['overridePrompt'] == '':
                     assignment['summaryPromptType'] = 0
@@ -91,10 +96,37 @@ class BeginAssignment_Custom(BeginAssignment):
     
                     prompt = itext(prompt_key, *prompt_values)
     
+                #===============================================================
+                # FraGon 29032022 Modificacion indicacion resumen uso caja plastico y carton
+                #===============================================================                
                 elif assignment['summaryPromptType'] == 2: #OverridePrompt
-                    prompt = assignment['overridePrompt']
+                    ## Building prompt depend of conditional with the options which are possible
+                    prompt_key='summary.prompt.custom.box.description'
+                    ## Assignment number
+                    prompt_values=[assignment['idDescription']]                                      
+                    
+                    if assignmentBoxUOM.isBoxUOM():
+                        prompt_key +='.nonempty'
+                        prompt_values.append(assignmentBoxUOM.getvalueKindOfBox())
+                    else:
+                        prompt_key +='.empty'
+
+                        
+                    
+                    prompt = itext(prompt_key, *prompt_values)                         
+
+                    
+                
+                #===============================================================
+                # #===============================================================
+                # # Este es el codigo original de la tarea
+                # #===============================================================                
+                # elif assignment['summaryPromptType'] == 2: #OverridePrompt
+                #     prompt = assignment['overridePrompt']
+                #===============================================================
                     
                 if prompt != '': #May be blank is summaryPromptType = 1
                     prompt_ready(prompt, True)
-                
+                    
+                                    
 class_factory.set_override(BeginAssignment, BeginAssignment_Custom)

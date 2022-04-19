@@ -8,6 +8,9 @@ from selection.PickPromptMultiple import PickPromptMultipleTask
 from vocollect_core.utilities.localization import itext
 from vocollect_core.dialog.functions import prompt_digits, prompt_ready
 from selection.SharedConstants import ENTER_QTY
+from selection_custom.CheckBoxUOM import CheckBoxUOM
+
+
 class PickPromptMultipleTask_Custom(PickPromptMultipleTask):
     
     #----------------------------------------------------------
@@ -25,9 +28,19 @@ class PickPromptMultipleTask_Custom(PickPromptMultipleTask):
                 additional_vocabulary['short product'] = False #Add short product to vocab
             else:
                 #FraGon 25052021 Se modifica texto de selecciona x producto en unidad de medida y
-                prompt = itext("selection.pick.prompt.pick.quantity.custom", 
-                                    self._expected_quantity, self._uom, self._id_description, self._description, self._message, )
-            
+                #FraGon 30032022 UOM without semicolon in the description
+                uom = self._uom.lower()[0:-1]
+                if CheckBoxUOM().isBoxUOM():
+                    if (uom == "cajas"):
+                        prompt = itext("selection.pick.prompt.pick.quantity.custom.uom.boxes",
+                                       self._expected_quantity, uom,  CheckBoxUOM().getvalueKindOfBox())
+                    else:
+                        prompt = itext("selection.pick.prompt.pick.quantity.custom",
+                                   self._expected_quantity, self._uom, self._id_description, self._description, self._message,)
+                else:
+                    prompt = itext("selection.pick.prompt.pick.quantity.custom",
+                                   self._expected_quantity, self._uom, self._id_description, self._description, self._message,)
+                                
             result = prompt_digits(prompt,
                                    itext("selection.pick.prompt.pick.quantity.help"),
                                    1, len(str(self._expected_quantity)), 
