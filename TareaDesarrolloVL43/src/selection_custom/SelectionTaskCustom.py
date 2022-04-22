@@ -51,7 +51,6 @@ class SelectionTask_Custom(SelectionTask):
                     PAP(lut,islast_lut)
                 if (pickingandpass.isSplitted()):
                     #FraGon 02032021 Confirma si asignacion se cierra para la zona donde pasa la caja o continua
-                    #print("es ultima caja:", pickingandpass.isLast())
                     if pickingandpass.isLast():
                         self._assignment_complete_prompt_key ='selection.complete.assignment.confirm.custom.last'
                     else:

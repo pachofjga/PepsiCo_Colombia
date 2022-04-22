@@ -1805,9 +1805,9 @@
     <property name="applicationName" value="/VocollectTask1.0/" type="String" editable="true" />
     <property name="applicationIcon" value="/VocollectTask1.0/" type="String" editable="true" />
     <property name="TaskRevision" value="CT-43-03-001" type="String" editable="false" />
-    <property name="LUTHost" value="192.168.11.65" type="String" editable="true" />
+    <property name="LUTHost" value="192.168.0.23" type="String" editable="true" />
     <property name="LUTPort" value="15004" type="Integer" editable="true" />
-    <property name="ODRHost" value="192.168.11.65" type="String" editable="true" />
+    <property name="ODRHost" value="192.168.0.23" type="String" editable="true" />
     <property name="ODRPort" value="15005" type="Integer" editable="true" />
     <property name="imageHost" value="http://YOUR-IMAGE-SERVER-HERE/" type="String" editable="true" />
     <property name="SaveState" value="true" type="Boolean" editable="true" />
@@ -1815,8 +1815,8 @@
     <property name="CollectVehicleInfo" value="true" type="Boolean" editable="true" />
     <property name="UseTriggerScanVocab" value="true" type="Boolean" editable="true" />
     <property name="TriggerScanTimeout" value="5" type="Integer" editable="true" />
-    <property name="BoxHost" value="192.168.11.65" type="String" editable="true" />
-    <property name="BoxODR" value="15009" type="String" editable="true" />
+    <property name="BoxHost" value="192.168.0.23" type="String" editable="true" />
+    <property name="BoxODR" value="15015" type="String" editable="true" />
   </properties>
   <deviceSettings>
     <property name="BarcodePort" value="blue" />

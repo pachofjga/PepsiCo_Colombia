@@ -121,14 +121,27 @@ class SelectionPrintTask_Custom(SelectionPrintTask):
             
     #-------------------------------------------------------------------------
     def enter_printer(self):
-        if not hasattr(self.task, 'printer_number') or self.task.printer_number is None:
-            self.task.printer_number = prompt_digits(itext('generic.printer'), 
-                                                            itext('generic.printer.help'), 
-                                                            1, 2, 
-                                                            False, #Confirm is done in next step for flow purposes 
-                                                            False)
+        #21042022 FraGon SE AGREGA LOGICA PARA OCUPAR IMPRESION EN LA MISMA TAREA PICKING POR ZONAS EN PICKING ESTANDAR
+        #NO SE SALTA IMPRESORA CUANDO ES PICKING POR ZONAS Y PIDE RECONFIRMARLA
+        pickingandpass=PAP()
+        if pickingandpass.isAsgDev():
+            if not hasattr(self.task, 'printer_number') or self.task.printer_number is None:
+                self.task.printer_number = prompt_digits(itext('generic.printer'), 
+                                                                itext('generic.printer.help'), 
+                                                                1, 2, 
+                                                                False, #Confirm is done in next step for flow purposes 
+                                                                False)
+            else:
+                #27032021 FraGon Se agrega condicion para saltar confirmacion
+                self.next_state = PRINT_LABELS
         else:
-            #27032021 FraGon Se agrega condicion para saltar confirmacion
-            self.next_state = PRINT_LABELS
+            if not hasattr(self.task, 'printer_number') or self.task.printer_number is None:
+                self.task.printer_number = prompt_digits(itext('generic.printer'), 
+                                                                itext('generic.printer.help'), 
+                                                                1, 2, 
+                                                                False, #Confirm is done in next step for flow purposes 
+                                                                False)
+            else:
+                self.next_state = CONFIRM_PRINTER
 
 class_factory.set_override(SelectionPrintTask, SelectionPrintTask_Custom)

@@ -12,6 +12,9 @@ from vocollect_core.utilities.localization import itext
 from vocollect_core.dialog.functions import prompt_only, prompt_ready
 from common.VoiceLinkLut import VoiceLinkLut
 from selection_custom.PickingAndPassCustom import PickingAndPass as PAP
+from selection_custom.CheckBoxUOM import CheckBoxUOM
+from voice import get_voice_application_property
+from selection.SelectionLuts import RegionConfig
 
 class SelectionVocabulary_Custom(SelectionVocabulary):
     
@@ -151,15 +154,24 @@ class SelectionVocabulary_Custom(SelectionVocabulary):
                 else:
                     prompt_only(itext('selection.new.container.multiple.put.prompt'))
                 pass
-            else:        
-                if self.region_config_rec['containerType'] == 0:
-                    prompt_only(itext('selection.new.container.not.allowed'))
-                elif len(self.assignment_lut) == 1:
-                    self._launch_new_container(self.assignment_lut[0])
-                elif put_prompt:
-                    self._launch_new_container(pick_task._curr_assignment)
-                else:
-                    prompt_only(itext('selection.new.container.multiple.put.prompt'))
+            else:
+                #FraGon 21042022 Confirma al operador que no es posible abrir contenedor
+                prompt_only(itext('selection.new.container.not.allowed'))
+            #===================================================================
+            # #===================================================================
+            # # SE COMENTA PARA NO USAR NUEVO CONTENEDOR USANDO TAREA PICKING POR ZONAS EN REGIONES PICKING ESTANDAR
+            # #===================================================================
+            # 
+            # else:
+            #     if self.region_config_rec['containerType'] == 0:
+            #         prompt_only(itext('selection.new.container.not.allowed'))
+            #     elif len(self.assignment_lut) == 1:
+            #         self._launch_new_container(self.assignment_lut[0])
+            #     elif put_prompt:
+            #         self._launch_new_container(pick_task._curr_assignment)
+            #     else:
+            #         prompt_only(itext('selection.new.container.multiple.put.prompt'))
+            #===================================================================
                 
             return True
         
@@ -171,29 +183,48 @@ class SelectionVocabulary_Custom(SelectionVocabulary):
             pickingandpass=PAP()
             if (pickingandpass.isLUTEmpty()):
                 lut = VoiceLinkLut('prTaskLUTCustomCheckForPrint')
-                #02112021 FraGon Se comenta isLastLut por unificacion de LUTs desarrolladas
-                #islast_lut = VoiceLinkLut('prTaskLUTCustomCheckForLast')
-                pickingandpass=PAP(lut.do_transmit(self.assignment_lut[0]['assignmentID']))
+                islast_lut = VoiceLinkLut('prTaskLUTCustomCheckForLast')
+                pickingandpass=PAP(lut.do_transmit(self.assignment_lut[0]['assignmentID']),
+                                   islast_lut.do_transmit(self.assignment_lut[0]['assignmentID']))
             if pickingandpass.isAsgDev():
                 prompt_key = 'summary.prompt.custom'
                 #FraGon 06012021 Asignacion con assignmentID=1 corresponde a asignacion de piezas y unidades, si esta impresa es buscar caja
                 #print("Validacion:", pickingandpass.isPrinted()) and (pickingandpass.isSplitted())
                 prompt_values=[]
+                #print("Validacion mensaje:",CheckBoxUOM().isBoxUOM())
                 if (pickingandpass.isPrinted()) and (pickingandpass.isSplitted()):
-                    prompt_key += '.search.box'
                     #FraGon 01092021 Se deja unicamente los ultimos 5 digitos de la asignacion de acuerdo a la etiqueta
-                    prompt_values=[str(self.assignment_lut[0]['idDescription'])[-9:-4]]
-                    prompt_values.append(str(self.assignment_lut[0]['idDescription'])[-4:-2])
+                    if CheckBoxUOM().isBoxUOM():
+                        prompt_key += '.search.box.uom'                
+                        prompt_values=[str(self.assignment_lut[0]['idDescription'])[-9:-4]]
+                        prompt_values.append(str(CheckBoxUOM().getvalueKindOfBox()))
+                        prompt_values.append(str(self.assignment_lut[0]['idDescription'])[-4:-2])
+                    else:
+                        prompt_key += '.search.box'
+                        #FraGon 01092021 Se deja unicamente los ultimos 5 digitos de la asignacion de acuerdo a la etiqueta
+                        prompt_values=[str(self.assignment_lut[0]['idDescription'])[-9:-4]]
+                        prompt_values.append(str(self.assignment_lut[0]['idDescription'])[-4:-2])
                 #FraGon 25022021 Asignacion con assignmentID=1 corresponde a asignacion de piezas y unidades, si no esta impresa es abrir caja
                 elif not(pickingandpass.isPrinted()) and (pickingandpass.isSplitted()):
                     #FraGon 01092021 Se deja unicamente los ultimos 5 digitos de la asignacion de acuerdo a la etiqueta
-                    prompt_values=[str(self.assignment_lut[0]['idDescription'])[-9:-4]]
-                    prompt_key += '.open.box'
+                    if CheckBoxUOM().isBoxUOM():
+                        prompt_values=[str(CheckBoxUOM().getvalueKindOfBox())]
+                        prompt_key += '.open.box.uom'
+                    else:
+                        #FraGon 01092021 Se deja unicamente los ultimos 5 digitos de la asignacion de acuerdo a la etiqueta
+                        prompt_values=[str(self.assignment_lut[0]['idDescription'])[-9:-4]]
+                        prompt_key += '.open.box'
                 #FraGon 25022021 Asignacion con assignmentID=2 corresponde a asignacion de cajas
                 elif (pickingandpass.isBox()):
                     #FraGon 01092021 Se deja unicamente los ultimos 5 digitos de la asignacion de acuerdo a la etiqueta
-                    prompt_values=[str(self.assignment_lut[0]['idDescription'])[-9:-4]]
-                    prompt_key += '.boxes'
+                    if CheckBoxUOM().isBoxUOM():
+                        prompt_values=[str(self.assignment_lut[0]['idDescription'])[-9:-4]]
+                        prompt_values.append(str(CheckBoxUOM().getvalueKindOfBox()))
+                        prompt_key += '.boxes.uom'
+                    else:
+                        #FraGon 01092021 Se deja unicamente los ultimos 5 digitos de la asignacion de acuerdo a la etiqueta
+                        prompt_values=[str(self.assignment_lut[0]['idDescription'])[-9:-4]]
+                        prompt_key += '.boxes'
                 #FraGon 25022021 Asignacion con assignmentID=3 corresponde a asignacion de estibas
                 elif (pickingandpass.isPallet()):
                     #FraGon 01092021 Se deja unicamente los ultimos 5 digitos de la asignacion de acuerdo a la etiqueta

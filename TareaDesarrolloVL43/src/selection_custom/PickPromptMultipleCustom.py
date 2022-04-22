@@ -34,6 +34,9 @@ class PickPromptMultipleTask_Custom(PickPromptMultipleTask):
                     if (uom == "cajas"):
                         prompt = itext("selection.pick.prompt.pick.quantity.custom.uom.boxes",
                                        self._expected_quantity, uom,  CheckBoxUOM().getvalueKindOfBox())
+                    else:
+                        prompt = itext("selection.pick.prompt.pick.quantity.custom",
+                                   self._expected_quantity, self._uom, self._id_description, self._description, self._message,)
                 else:
                     prompt = itext("selection.pick.prompt.pick.quantity.custom",
                                    self._expected_quantity, self._uom, self._id_description, self._description, self._message,)

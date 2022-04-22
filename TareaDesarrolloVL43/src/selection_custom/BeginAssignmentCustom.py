@@ -20,10 +20,16 @@ class BeginAssignment_Custom(BeginAssignment):
         #FraGon 06012021 Utilizo lut de impresion para generar dialogo adicional de caja nueva o caja media
         # y cambiar prompt de bienvenida
         pickingandpass=PAP()
-        # Reinicia los estados de la clase antes de tomar nueva asignación
+        lut = VoiceLinkLut('prTaskLUTCustomCheckForPrint')
+        lut.do_transmit(self._assignment_lut[0]['assignmentID'])
+        islast_lut= VoiceLinkLut('prTaskLUTCustomCheckForLast')
+        islast_lut.do_transmit(self._assignment_lut[0]['assignmentID'])
+        PAP(lut, islast_lut)
+        # Reinicia los estados de la clase antes de tomar nueva asignaciÃ³n
         CheckBoxUOM().resetBoxUOM()
-        # Revisa asignación para validacion del customer number respecto a valores dentro de la descripción: plastico y Carton
+        # Revisa asignaciÃ³n para validacion del customer number respecto a valores dentro de la descripciÃ³n: plastico y Carton
         assignmentBoxUOM=CheckBoxUOM(self._assignment_lut)
+        #FraGon 06012021 Pregunta si asignacion es de tipo split
         if (pickingandpass.isLUTEmpty()):
                 lut = VoiceLinkLut('prTaskLUTCustomCheckForPrint')
                 lut.do_transmit(self._assignment_lut[0]['assignmentID'])
