@@ -35,7 +35,8 @@ class SelectionVocabulary_Custom(SelectionVocabulary):
                        'review contents':  obj_factory.get(Vocabulary,'review_contents', self._review_contents, False),
                        'review cluster':   obj_factory.get(Vocabulary,'review_cluster', self._review_cluster, False),
                        'pass assignment':  obj_factory.get(Vocabulary,'pass assignment', self._pass_assignment, False),
-                       'assignment number': obj_factory.get(Vocabulary,'assignment number', self._assignment_number, False)
+                       'assignment number': obj_factory.get(Vocabulary,'assignment number', self._assignment_number, False),
+                       'figure': obj_factory.get(Vocabulary,'figure', self._active_figure, False)
                        }
             self.runner = runner
     
@@ -232,6 +233,15 @@ class SelectionVocabulary_Custom(SelectionVocabulary):
                     prompt_key += '.pallet'       
                 prompt = itext(prompt_key, *prompt_values)
                 prompt_ready(prompt, True)
+            return True
+        
+        def _active_figure(self):
+            #FraGon 30082022 Utilizo lut para obtener figura activa
+            lut = VoiceLinkLut('prTaskLUTActiveFigure') ## EL NOMBRE DE LA LUT CAMBIA --MODIFICACIÓN--
+            activeFigure = lut.do_transmit(self.assignment_lut[0]['assignmentID']) ##ESTE PARAMETRO PUEDE CAMBIA O INCLUSO ESTAR VACIO
+            [print("Imprimo lo que contiene activeFigure", activeFigure)] ##ESTO SE PUEDE COMENTAR DESPUES DE PROBAR LA LUT
+            prompt = itext('selection.prompt.active.figure', activeFigure[0]['figure']) ##AQUI SE CONTRUYE EL ANUNCIO PARA EL OPERADOR
+            prompt_ready(prompt, True)
             return True
 
 class_factory.set_override(SelectionVocabulary, SelectionVocabulary_Custom)
